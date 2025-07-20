@@ -1,0 +1,7 @@
+.cpcache/
+node_modules/
+resources/public/app-js/
+resources/public/portfolio-js/
+.lsp/
+.shadow-cljs/
+**/.cache/

@@ -1,0 +1,12 @@
+{:deps {}
+ :dev-http {8080 ["resources/public" "classpath:public"]}
+ :builds
+ {:app
+  {:target :browser
+   :modules {:main {:init-fn rifuta/main}}
+   :dev {:output-dir "resources/public/app-js"}}
+
+  :portfolio
+  {:target :browser
+   :modules {:main {:init-fn rifuta.portfolio/main}}
+   :dev {:output-dir "resources/public/portfolio-js"}}}}

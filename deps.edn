@@ -1,0 +1,5 @@
+{:paths ["src" "test" "portolio" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.12.1"}
+        thheller/shadow-cljs {:mvn/version "3.1.7"}
+        no.cjohansen/portfolio {:mvn/version "2025.01.28"}
+        no.cjohansen/replicant {:mvn/version "2025.06.21"}}}
