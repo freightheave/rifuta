@@ -2,6 +2,8 @@
 node_modules/
 resources/public/app-js/
 resources/public/portfolio-js/
+resources/public/test-js/
 .lsp/
 .shadow-cljs/
 **/.cache/
+

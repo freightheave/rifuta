@@ -3,10 +3,17 @@
  :builds
  {:app
   {:target :browser
+   :devtools {:after-load rifuta/main}
    :modules {:main {:init-fn rifuta/main}}
    :dev {:output-dir "resources/public/app-js"}}
+
+  :test
+  {:target :browser
+   :modules {:main {:init-fn test/main}}
+   :dev {:output-dir "resources/public/test-js"}}
 
   :portfolio
   {:target :browser
    :modules {:main {:init-fn rifuta.portfolio/main}}
    :dev {:output-dir "resources/public/portfolio-js"}}}}
+
