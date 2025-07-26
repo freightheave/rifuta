@@ -9,6 +9,7 @@
 
   :test
   {:target :browser
+   :devtools {:after-load test/main}
    :modules {:main {:init-fn test/main}}
    :dev {:output-dir "resources/public/test-js"}}
 
