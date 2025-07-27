@@ -1,0 +1,18 @@
+- Functionality
+-- Save/Export/Import the data.
+-- Package the app and run on phone (shadow "release mode")
+-- Integration with cloud storage
+-- Export ALL sets as a CSV/JSON/Whatever
+-- Write Manifest.json 
+-- Prefill prev. weight and reps based on exercise.
+-- Ability to configure program.
+	-- Double progression on weights/reps for exercise.
+	-- Naming gym sessions. (look into naming the template for the program, "workout")
+-- Exercise shoudl be DD/type
+-- Weight should have switchable units
+-- RIR and/or RPE
+
+
+- Visual stuff
+-- Heading/App Name
+-- PPrint the forms
