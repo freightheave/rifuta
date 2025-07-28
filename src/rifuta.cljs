@@ -19,7 +19,7 @@
     (swap! store (fn [state]
                    (assoc-in state [:current-set :note] x)))))
 
-(defn reps-input [e]
+(defn reps-input [^js e]
   (let [x (.-valueAsNumber (.-target e))]
     (swap! store (fn [state]
                    (assoc-in state [:current-set :reps] x)))))

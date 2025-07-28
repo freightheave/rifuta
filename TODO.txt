@@ -1,4 +1,5 @@
 - Functionality
+-- Make Shadow server listen on 0.0.0.0
 -- Save/Export/Import the data.
 -- Package the app and run on phone (shadow "release mode")
 -- Integration with cloud storage

@@ -55,4 +55,8 @@
       (prn)
       (prn "test")))
 
+  (defn fac [n]
+    (if (= n 0)
+      1 (* n (fac (dec n)))))
+
   ,)
