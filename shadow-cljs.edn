@@ -1,6 +1,6 @@
 {:deps {}
  :dev-http {8080 ["resources/public" "classpath:public"]
-            5090 ["resources/release" "classpath:public"]}
+            5090 ["resources/release" "classpath:release"]}
  :builds
  {:app
   {:target :browser
