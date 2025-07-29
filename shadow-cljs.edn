@@ -1,11 +1,13 @@
 {:deps {}
- :dev-http {8080 ["resources/public" "classpath:public"]}
+ :dev-http {8080 ["resources/public" "classpath:public"]
+            5090 ["resources/release" "classpath:public"]}
  :builds
  {:app
   {:target :browser
    :devtools {:after-load rifuta/main}
    :modules {:main {:init-fn rifuta/main}}
-   :dev {:output-dir "resources/public/app-js"}}
+   :dev {:output-dir "resources/public/app-js"}
+   :release {:output-dir "resources/release/app-js"}}
 
   :test
   {:target :browser
@@ -17,4 +19,3 @@
   {:target :browser
    :modules {:main {:init-fn rifuta.portfolio/main}}
    :dev {:output-dir "resources/public/portfolio-js"}}}}
-

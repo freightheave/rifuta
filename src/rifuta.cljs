@@ -30,13 +30,23 @@
                        all-sets (get state :all-sets)]
                    (assoc state :all-sets (conj all-sets curr))))))
 
+(defn export-all-sets []
+  ;; Export logic goes in here. 
+  (let [blob (js/Blob. [@store] (clj->js {:type "text/plain"}))
+        link (js/document.createElement "a")
+        lmao (js/URL.createObjectURL blob)]
+    (set! (.-href link) lmao)
+    (set! (.-download link) "download_file.txt")
+    (.click link)))
+
 (def handler-by-name {:exercise-input exercise-input
                       :weight-input weight-input
                       :note-input note-input
                       :reps-input reps-input
-                      :store-set store-set})
+                      :store-set store-set
+                      :export-all-sets export-all-sets})
 
-(defn render-logset-form [state] ; should return the HTML only. nope can handle everything here.
+(defn render-logset-form [state]
   [:div.all
    [:div.exercise "Exercise Name: " [:input {:type "text"
                                              :on {:input [:exercise-input]}}]] ; add listeners to all the divs, :on :input.Replace test with value from last set of exercise. Also, look into "Placeholder" attribute for pre-fill.
@@ -57,7 +67,10 @@
 (defn render-app [state]
   [:div
    (render-logset-form state)
-   (render-done-sets state)])
+   (render-done-sets state)
+   [:div.dlButton [:button {:on
+                            {:click [:export-all-sets]}}
+                   "Download All Sets"]]])
 
 (defn main []
   (let [el (js/document.getElementById "app")]

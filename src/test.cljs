@@ -4,6 +4,16 @@
 
 (def a (atom nil))
 
+(defn download-button []
+  (let [blob (js/Blob. [@a] (clj->js {:type "text/plain"}))
+        link (js/document.createElement "a")
+        lmao (js/URL.createObjectURL blob)]
+    (set! (.-href link) lmao)
+    (set! (.-download link) "download_file.txt")
+    (.click link)
+    ;; URL.revokeObjectURL(link.href);
+    (js/URL.revokeObjectURL (.-href link))))
+
 (defn button-click-fn [& args]
   (swap! a (fn [m]
              (assoc m :incremented
@@ -20,7 +30,8 @@
     (when (= :replicant.trigger/dom-event (:replicant/trigger event-data))
       (let [e (:replicant/dom-event event-data)
             m {:button-click-fn button-click-fn
-               :input-box-fn input-box-fn}]
+               :input-box-fn input-box-fn
+               :download-button download-button}]
         (apply (m (first handler-data))
                e (rest handler-data))))
     (js/console.log event-data handler-data)))
@@ -34,7 +45,9 @@
    [:div#displaythething (:incremented m)]
    [:button {:on {:click [:button-click-fn 1]}}
 
-    "Click Me"]])
+    "Click Me"]
+   [:button {:on {:click [:download-button]}}
+    "Download"]])
 
 (defn main []
   (let [el (js/document.getElementById "app")]
