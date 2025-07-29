@@ -30,14 +30,24 @@
                        all-sets (get state :all-sets)]
                    (assoc state :all-sets (conj all-sets curr))))))
 
-(defn export-all-sets []
+(defn download-as-file
+  "Downloads a blob, creates temp element and releases ram from blob after DL."
+  [content file-name]
   ;; Export logic goes in here. 
-  (let [blob (js/Blob. [@store] (clj->js {:type "text/plain"}))
-        link (js/document.createElement "a")
-        lmao (js/URL.createObjectURL blob)]
-    (set! (.-href link) lmao)
-    (set! (.-download link) "download_file.txt")
-    (.click link)))
+  (let [url (->> {:type "text/plain"}
+                 clj->js
+                 (js/Blob. [content])
+                 (js/URL.createObjectURL))
+        link (js/document.createElement "a")]
+    (set! (.-href link) url)
+    (set! (.-download link) file-name)
+    ;;
+    (.click link)
+    ;; release ram from the blob
+    (js/URL.revokeObjectURL url)))
+
+(defn export-all-sets []
+  (download-as-file @store "rifuta-sets-export.txt"))
 
 (def handler-by-name {:exercise-input exercise-input
                       :weight-input weight-input
