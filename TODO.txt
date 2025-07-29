@@ -1,10 +1,12 @@
 - Functionality
--- Make Shadow server listen on 0.0.0.0
--- Save/Export/Import the data.
--- Package the app and run on phone (shadow "release mode")
+-D Make Shadow server listen on 0.0.0.0 [Moot, use github pages for SSL]
+-D Save/Export/Import the data.
+-- Save atom to localStorage.
+	-- restore from local storage on load.
+-D Package the app and run on phone (shadow "release mode")
+-- Run app as PWA.
 -- Integration with cloud storage
 -- Export ALL sets as a CSV/JSON/Whatever
--- Write Manifest.json 
 -- Prefill prev. weight and reps based on exercise.
 -- Ability to configure program.
 	-- Double progression on weights/reps for exercise.
