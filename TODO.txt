@@ -5,6 +5,8 @@
 	-- restore from local storage on load.
 -D Package the app and run on phone (shadow "release mode")
 -- Run app as PWA.
+-- Upload sets.
+-- Time since last set. (Look into webcomponents, or other ways.)
 -- Integration with cloud storage
 -- Export ALL sets as a CSV/JSON/Whatever
 -- Prefill prev. weight and reps based on exercise.

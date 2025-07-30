@@ -19,7 +19,7 @@
     (swap! store (fn [state]
                    (assoc-in state [:current-set :note] x)))))
 
-(defn reps-input [^js e]
+(defn reps-input [e]
   (let [x (.-valueAsNumber (.-target e))]
     (swap! store (fn [state]
                    (assoc-in state [:current-set :reps] x)))))
@@ -33,7 +33,6 @@
 (defn download-as-file
   "Downloads a blob, creates temp element and releases ram from blob after DL."
   [content file-name]
-  ;; Export logic goes in here. 
   (let [url (->> {:type "text/plain"}
                  clj->js
                  (js/Blob. [content])
@@ -78,9 +77,9 @@
   [:div
    (render-logset-form state)
    (render-done-sets state)
-   [:div.dlButton [:button {:on
-                            {:click [:export-all-sets]}}
-                   "Download All Sets"]]])
+   [:div [:button {:on
+                   {:click [:export-all-sets]}}
+          "Export All Sets"]]])
 
 (defn main []
   (let [el (js/document.getElementById "app")]
