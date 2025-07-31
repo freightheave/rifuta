@@ -94,6 +94,9 @@
           "Export All Sets"]]])
 
 (defn main []
+  (-> (js/navigator.serviceWorker.register "/sw.js" (clj->js {:scope "/"}))
+      (.then #(js/console.log %))
+      (.catch #(js/console.log % "SW Reg Failed.")))
   (let [el (js/document.getElementById "app")]
     (r/set-dispatch!
       (fn [{e :replicant/dom-event :as event-data} [function-name & args :as _handler-data]]
@@ -110,8 +113,6 @@
                  (reset! store (cljs.reader/read-string store-str))))
         (.catch (fn [_]
                   (reset! store {:current-set {}, :all-sets []}))))))
-
-; --- Testing code from here
 
 (comment
   (def state {:current-set {:exercise "blah", :reps 200, :weight 2000, :note "ezpz"}, :all-sets [{:exercise "squats", :reps 200, :weight 2000, :note "ezpz"}]})
