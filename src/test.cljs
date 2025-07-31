@@ -39,7 +39,7 @@
 (defn render-inc-test [m]
   [:div#counter
    [:input#inputbox {:type "number"
-                     :value (:incrementor m)
+                     :value (inc (:incrementor m))
                      :on {:input [:input-box-fn]}}] ; (swap! a fn [m] (assoc m :incrementor x)) == (apply f '(current value of a) '(no args here)) -> this means that f is being called with current value of a (which is the map.)
 
    [:div#displaythething (:incremented m)]
@@ -58,52 +58,13 @@
 ;;; TEST
 
 (comment
-
-  (.then (js/navigator.storage.getDirectory)
-         (fn [arg]
-           (def root arg)
-           (js/console.log "testing from navigator"arg)))
-
-  (.then (.getFileHandle root "test.txt" (clj->js {:create true}))
-         #(def handle %))
-
-  (-> (.createWritable handle)
-      (.then #(def stream %)))
-
-  (def p (-> (.write stream "Input Stream to text file.")
-           (.then (fn [_]
-                    (.close stream)))))
-
-  (def p2 (.getFile handle))
-
-  root
-  handle
-  stream
-  (js/console.log p)
-  (.then p2 #(js/console.log (.then (.text %)
-                                    (fn [s] (js/console.log s)))))
-
-  (defn write-to-opfs [file-name, content-str]
-    (-> (js/navigator.storage.getDirectory)
-        (.then (fn [x] (js/console.log x) x))
-        (.then #(.getFileHandle % file-name (clj->js {:create true})))
-        (.then (fn [x] (js/console.log x) x))
-        (.then #(.createWritable ^js %))
-        (.then (fn [stream]
-                 (.then (.write stream content-str)
-                        (fn [_]
-                          (.close stream)))))))
-  (defn read-from-opfs [file-name]
-    (-> (js/navigator.storage.getDirectory)
-        (.then #(.getFileHandle % file-name))
-        (.then #(.getFile %))
-        (.then #(.text %))))
-
-  (write-to-opfs "fn-test.txt" "testing the write function.")
-  (.then (read-from-opfs "fn-test.txt") js/console.log)
-
-  ,)
-
-(comment
+  (js/alert "foo")
   ;; browser-REPL
-  (^{:clj-kondo/ignore [:unresolved-symbol]} (requiring-resolve 'shadow.cljs.devtools.api/repl) :test))
+  :cljs/quit
+  (do
+    (clojure.core/require 'shadow.cljs.devtools.api)
+    (shadow.cljs.devtools.api/repl :test))
+  (swap! a assoc :incrementor 2)
+  
+  
+  ,)

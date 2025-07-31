@@ -1,6 +1,7 @@
 (ns rifuta
   (:require
-   [replicant.dom :as r]))
+   [replicant.dom :as r]
+   [rifuta.opfs :as opfs]))
 
 (defonce store (atom nil))
 
@@ -24,11 +25,14 @@
     (swap! store (fn [state]
                    (assoc-in state [:current-set :reps] x)))))
 
-(defn store-set [] ; --submits to the atom, call button logic here.
-  (swap! store (fn [state]
-                 (let [curr (get state :current-set)
-                       all-sets (get state :all-sets)]
-                   (assoc state :all-sets (conj all-sets curr))))))
+(defn store-set [_e] ; --submits to the atom, call button logic here.
+  (let [new-state (swap! store (fn [state]
+                                 (let [curr (get state :current-set)
+                                       all-sets (get state :all-sets)]
+                                   (-> state
+                                     (assoc :all-sets (conj all-sets curr))
+                                     (update :current-set dissoc :note)))))]
+    (opfs/write "store.edn", (pr-str new-state))))
 
 (defn download-as-file
   "Downloads a blob, creates temp element and releases ram from blob after DL."
@@ -45,8 +49,8 @@
     ;; release ram from the blob
     (js/URL.revokeObjectURL url)))
 
-(defn export-all-sets []
-  (download-as-file @store "rifuta-sets-export.txt"))
+(defn export-all-sets [_e]
+  (download-as-file @store "rifuta-sets-export.txt")) ;; just a lilbit redundant
 
 (def handler-by-name {:exercise-input exercise-input
                       :weight-input weight-input
@@ -55,17 +59,24 @@
                       :store-set store-set
                       :export-all-sets export-all-sets})
 
-(defn render-logset-form [state]
+(defn today []
+  (str (first (.split (.toISOString (js/Date.))"T")), ".txt"))
+
+(defn render-logset-form [{{:keys [exercise note weight reps]} :current-set :as _state}]
   [:div.all
    [:div.exercise "Exercise Name: " [:input {:type "text"
+                                             :value exercise
                                              :on {:input [:exercise-input]}}]] ; add listeners to all the divs, :on :input.Replace test with value from last set of exercise. Also, look into "Placeholder" attribute for pre-fill.
    [:div.weight "Weight: " [:input {:type "number"
+                                    :value weight
                                     :on {:input [:weight-input]}}]]
 
    [:div.note "Note: " [:input {:type "text"
+                                :value note
                                 :on {:input [:note-input]}}]]
    [:div.reps "Repetitions: " [:input {:type "number"
-                                       :on {:input [:reps-input]}}]]
+                                             :value reps
+                                             :on {:input [:reps-input]}}]]
    [:div.submit [:button {:on
                           {:click [:store-set]}}
                  "Submit"]]])
@@ -84,10 +95,13 @@
 (defn main []
   (let [el (js/document.getElementById "app")]
     (r/set-dispatch!
-      (fn [{e :replicant/dom-event :as event-data} [function-name & args :as handler-data]]
-        (when (= :replicant.trigger/dom-event (:replicant/trigger event-data))
-          (apply (handler-by-name function-name)
-                 e args))))
+      (fn [{e :replicant/dom-event :as event-data} [function-name & args :as _handler-data]]
+        (try
+          (when (= :replicant.trigger/dom-event (:replicant/trigger event-data))
+            (apply (handler-by-name function-name)
+                   e args))
+          (catch js/Error err
+            (js/console.log "Event Handler failed" err)))))
     (add-watch store :watcher (fn [_ _ _ state]
                                 (r/render el (render-app state))))
     (reset! store {:current-set {}, :all-sets []}))) ; always 'CALL' the render function.
@@ -96,7 +110,33 @@
 
 (comment
   (def state {:current-set {:exercise "blah", :reps 200, :weight 2000, :note "ezpz"}, :all-sets [{:exercise "squats", :reps 200, :weight 2000, :note "ezpz"}]})
+  (str state)
   (def state @store)
   (def x "lmao")
   (assoc-in state [:current-set :note] x)
-  (assoc-in {} "lmao" 2))
+  (assoc-in {} "lmao" 2)
+  (str (js/Date.now), ".txt")
+  (str (.split (.toISOString (js/Date.)) 'T'), ".txt")
+  (let [x (first (.split  (.toISOString (js/Date.))"T"))]
+    x)
+  (first (cljs.core/js->clj (.split (.toISOString (js/Date.))"T")))
+  (js/Date.now)
+  (+ 1 3) ; 4
+  (.catch (.then (opfs/read "foo.txt")
+            #(def s2 %))
+          #(def error1 %))
+  s2
+  (js/console.log error1)
+
+  ,)
+
+; ---Connect to browser REPL
+(comment
+  (js/alert "foo")
+  ;; browser-REPL
+  :cljs/quit
+  (do
+    (clojure.core/require 'shadow.cljs.devtools.api)
+    (shadow.cljs.devtools.api/repl :app))
+  
+  ,)
