@@ -1,5 +1,6 @@
 (ns rifuta
   (:require
+   [cljs.reader]
    [replicant.dom :as r]
    [rifuta.opfs :as opfs]))
 
@@ -104,7 +105,11 @@
             (js/console.log "Event Handler failed" err)))))
     (add-watch store :watcher (fn [_ _ _ state]
                                 (r/render el (render-app state))))
-    (reset! store {:current-set {}, :all-sets []}))) ; always 'CALL' the render function.
+    (-> (opfs/read "store.edn")
+        (.then (fn [store-str]
+                 (reset! store (cljs.reader/read-string store-str))))
+        (.catch (fn [_]
+                  (reset! store {:current-set {}, :all-sets []}))))))
 
 ; --- Testing code from here
 
