@@ -12,8 +12,6 @@
                (.then (.write stream content-str)
                       (fn [_]
                         (.close stream)))))
-      (.then (fn [_]
-               (throw (js/Error. "Oops"))))
       (.catch (fn [error] (js/console.log "failed writing:" error)))))
 
 (defn read

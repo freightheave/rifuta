@@ -111,7 +111,10 @@
         (.then (fn [store-str]
                  (reset! store (cljs.reader/read-string store-str))))
         (.catch (fn [_]
-                  (reset! store {:current-set {}, :all-sets []}))))))
+                  (let [store-str (js/localStorage.getItem "rifuta")]
+                    (if (nil? store-str)
+                      (reset! store {:current-set {}, :all-sets []})
+                      (reset! store (cljs.reader/read-string store-str)))))))))
 
 ;; --- TEST CODE
 
@@ -134,8 +137,11 @@
           #(def error1 %))
   s2
   (js/console.log error1)
-  (opfs/write (js/localStorage.setItem "bar", "foo"))
-  (js/localStorage.getItem "bar")
+  (let [x (js/localStorage.getItem "rifuta")]
+    (if (nil? x)
+      (reset! store {:current-set {}, :all-sets []})))
+  (throw (js/Error. "Oops"))
+  
   ,)
 
 ; ---Connect to browser REPL
