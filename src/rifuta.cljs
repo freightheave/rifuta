@@ -6,6 +6,10 @@
 
 (defonce store (atom nil))
 
+(defn conj-err [s]
+  (swap! store update :errors conj s)
+  ,)
+
 (defn exercise-input [e]
   (let [x (.-value (.-target e))]
     (swap! store (fn [state]
@@ -34,8 +38,14 @@
                                      (assoc :all-sets (conj all-sets curr))
                                      (update :current-set dissoc :note)))))]
     (-> (opfs/write "store.edn", (pr-str new-state))
-      (.catch (fn [_]
-                (js/localStorage.setItem "store.edn", (pr-str new-state)))))))
+        (.then #(conj-err "wrote to opfs"))
+        (.catch (fn [_]
+                  (conj-err "Failed opfs/write")
+                  (try
+                    (js/localStorage.setItem "store.edn", (pr-str new-state))
+                    (conj-err "Load to local storage.")
+                    (catch js/Error err
+                      (conj-err (str "Failed localStorage write", err)))))))))
 
 (defn download-as-file
   "Downloads a blob, creates temp element and releases ram from blob after DL."
@@ -88,6 +98,9 @@
   [:div
    (render-logset-form state)
    (render-done-sets state)
+   [:ol
+    (for [x (:errors state)]
+      [:li [:pre x]])]
    [:div [:button {:on
                    {:click [:export-all-sets]}}
           "Export All Sets"]]])
@@ -109,12 +122,18 @@
                                 (r/render el (render-app state))))
     (-> (opfs/read "store.edn")
         (.then (fn [store-str]
-                 (reset! store (cljs.reader/read-string store-str))))
-        (.catch (fn [_]
+                 (reset! store (cljs.reader/read-string store-str))
+                 (conj-err  "Read from opfs/read")))
+        (.catch (fn [e]
+                  (conj-err (str "Failed OPFS/Read" e))
                   (let [store-str (js/localStorage.getItem "store.edn")]
                     (if (nil? store-str)
-                      (reset! store {:current-set {}, :all-sets []})
-                      (reset! store (cljs.reader/read-string store-str)))))))))
+                      (do
+                        (reset! store {:current-set {}, :all-sets [], :errors ()})
+                        (conj-err "Reset to default value."))
+                      (do
+                        (reset! store (cljs.reader/read-string store-str))
+                        (conj-err "Read from localstorage.")))))))))
 
 ;; --- TEST CODE
 
