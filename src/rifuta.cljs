@@ -33,10 +33,9 @@
                                    (-> state
                                      (assoc :all-sets (conj all-sets curr))
                                      (update :current-set dissoc :note)))))]
-    (try
-      (.then (opfs/write "store.edn", (pr-str new-state)))
-      (catch js/Error err
-        (js/localStorage.setItem "store.edn", (pr-str new-state))))))
+    (-> (opfs/write "test.txt", "foobar")
+      (.catch (fn [_]
+                (js/localStorage.setItem "store", (pr-str new-state)))))))
 
 (defn download-as-file
   "Downloads a blob, creates temp element and releases ram from blob after DL."
@@ -135,7 +134,8 @@
           #(def error1 %))
   s2
   (js/console.log error1)
-
+  (opfs/write (js/localStorage.setItem "bar", "foo"))
+  (js/localStorage.getItem "bar")
   ,)
 
 ; ---Connect to browser REPL
