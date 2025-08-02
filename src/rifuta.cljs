@@ -123,7 +123,7 @@
     (-> (opfs/read "store.edn")
         (.then (fn [store-str]
                  (reset! store (cljs.reader/read-string store-str))
-                 (conj-err  "Read from opfs/read")))
+                 (conj-err  (str "Read2 from opfs/read" store-str))))
         (.catch (fn [e]
                   (conj-err (str "Failed OPFS/Read" e))
                   (let [store-str (js/localStorage.getItem "store.edn")]
