@@ -79,7 +79,7 @@
                                              :on {:input [:reps-input]}}]]
    [:div.submit [:button {:on
                           {:click [:store-set]}}
-                 "Submit"]]])
+                 "Submit2"]]])
 
 (defn render-done-sets [state]
   [:div [:p (str (peek (get state :all-sets)))]])
