@@ -26,14 +26,17 @@
     (swap! store (fn [state]
                    (assoc-in state [:current-set :reps] x)))))
 
-(defn store-set [_e] ; --submits to the atom, call button logic here.
+(defn store-set [_e]
   (let [new-state (swap! store (fn [state]
                                  (let [curr (get state :current-set)
                                        all-sets (get state :all-sets)]
                                    (-> state
                                      (assoc :all-sets (conj all-sets curr))
                                      (update :current-set dissoc :note)))))]
-    (opfs/write "store.edn", (pr-str new-state))))
+    (try
+      (.catch (opfs/write "store.edn", (pr-str new-state)))
+      (catch js/Error err
+        (js/localStorage.setItem "store.edn", (pr-str new-state))))))
 
 (defn download-as-file
   "Downloads a blob, creates temp element and releases ram from blob after DL."
@@ -45,10 +48,8 @@
         link (js/document.createElement "a")]
     (set! (.-href link) url)
     (set! (.-download link) file-name)
-    ;;
     (.click link)
-    ;; release ram from the blob
-    (js/URL.revokeObjectURL url)))
+    (js/URL.revokeObjectURL url)))    ;; release ram from the blob
 
 (defn export-all-sets [_e]
   (download-as-file @store "rifuta-sets-export.txt")) ;; just a lilbit redundant
@@ -67,11 +68,10 @@
   [:div.all
    [:div.exercise "Exercise Name: " [:input {:type "text"
                                              :value exercise
-                                             :on {:input [:exercise-input]}}]] ; add listeners to all the divs, :on :input.Replace test with value from last set of exercise. Also, look into "Placeholder" attribute for pre-fill.
+                                             :on {:input [:exercise-input]}}]]
    [:div.weight "Weight: " [:input {:type "number"
                                     :value weight
                                     :on {:input [:weight-input]}}]]
-
    [:div.note "Note: " [:input {:type "text"
                                 :value note
                                 :on {:input [:note-input]}}]]
@@ -113,6 +113,8 @@
                  (reset! store (cljs.reader/read-string store-str))))
         (.catch (fn [_]
                   (reset! store {:current-set {}, :all-sets []}))))))
+
+;; --- TEST CODE
 
 (comment
   (def state {:current-set {:exercise "blah", :reps 200, :weight 2000, :note "ezpz"}, :all-sets [{:exercise "squats", :reps 200, :weight 2000, :note "ezpz"}]})
