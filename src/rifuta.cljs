@@ -33,9 +33,9 @@
                                    (-> state
                                      (assoc :all-sets (conj all-sets curr))
                                      (update :current-set dissoc :note)))))]
-    (-> (opfs/write "test.txt", "foobar")
+    (-> (opfs/write "store.edn", (pr-str new-state))
       (.catch (fn [_]
-                (js/localStorage.setItem "store", (pr-str new-state)))))))
+                (js/localStorage.setItem "store.edn", (pr-str new-state)))))))
 
 (defn download-as-file
   "Downloads a blob, creates temp element and releases ram from blob after DL."
@@ -111,7 +111,7 @@
         (.then (fn [store-str]
                  (reset! store (cljs.reader/read-string store-str))))
         (.catch (fn [_]
-                  (let [store-str (js/localStorage.getItem "rifuta")]
+                  (let [store-str (js/localStorage.getItem "store.edn")]
                     (if (nil? store-str)
                       (reset! store {:current-set {}, :all-sets []})
                       (reset! store (cljs.reader/read-string store-str)))))))))
@@ -137,7 +137,7 @@
           #(def error1 %))
   s2
   (js/console.log error1)
-  (let [x (js/localStorage.getItem "rifuta")]
+  (let [x (js/localStorage.getItem "st")]
     (if (nil? x)
       (reset! store {:current-set {}, :all-sets []})))
   (throw (js/Error. "Oops"))

@@ -12,7 +12,9 @@
                (.then (.write stream content-str)
                       (fn [_]
                         (.close stream)))))
-      (.catch (fn [error] (js/console.log "failed writing:" error)))))
+      #_(.then #(throw (js/Error. "oops")))
+      (.catch (fn [error] (js/console.log "failed writing:" error)
+                (throw error)))))
 
 (defn read
   "ASYNC, Returns a promise that resolves to the contents of filename in OPFS as string.
@@ -21,4 +23,5 @@
   (-> (js/navigator.storage.getDirectory)
       (.then #(.getFileHandle % file-name))
       (.then #(.getFile %))
-      (.then #(.text %))))
+      (.then #(.text %))
+      #_(.then #(throw (js/Error. "oops")))))
