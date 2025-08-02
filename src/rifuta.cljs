@@ -34,7 +34,7 @@
                                      (assoc :all-sets (conj all-sets curr))
                                      (update :current-set dissoc :note)))))]
     (try
-      (.catch (opfs/write "store.edn", (pr-str new-state)))
+      (.then (opfs/write "store.edn", (pr-str new-state)))
       (catch js/Error err
         (js/localStorage.setItem "store.edn", (pr-str new-state))))))
 
