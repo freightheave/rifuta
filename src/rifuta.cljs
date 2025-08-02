@@ -129,7 +129,7 @@
                   (let [store-str (js/localStorage.getItem "store.edn")]
                     (if (nil? store-str)
                       (do
-                        (reset! store {:current-set {}, :all-sets [], :errors ()})
+                        (swap! store merge {:current-set {}, :all-sets []})
                         (conj-err "Reset to default value."))
                       (do
                         (reset! store (cljs.reader/read-string store-str))

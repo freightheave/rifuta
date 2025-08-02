@@ -24,4 +24,7 @@
       (.then #(.getFileHandle % file-name))
       (.then #(.getFile %))
       (.then #(.text %))
+      (.then #(if (= % "")
+                (throw (js/Error. "Empty File"))
+                %))
       #_(.then #(throw (js/Error. "oops")))))
