@@ -4,6 +4,19 @@
 
 (def a (atom nil))
 
+(defn remove-toast []
+  (.remove (js/document.getElementById "msg")))
+
+(defn toast-fn [content, div-name]
+  (let [t-div (js/document.getElementById div-name)
+        toast (js/document.createElement "div")
+        t-text (js/document.createTextNode (pr-str content))]
+    (set! (.-id toast) "msg")
+    (.appendChild toast t-text)
+    (.appendChild t-div toast)
+    (js/setTimeout remove-toast 1000)
+    ,))
+
 (defn download-button []
   (let [blob (js/Blob. [@a] (clj->js {:type "text/plain"}))
         link (js/document.createElement "a")
@@ -16,8 +29,10 @@
 
 (defn button-click-fn [& args]
   (swap! a (fn [m]
+             (js/setTimeout #(swap! a dissoc :toast) 1000)
              (assoc m :incremented
-                    (+ (:incremented m) (:incrementor m))))))
+                    (+ (:incremented m) (:incrementor m))
+                    :toast "toast notif"))))
 
 (defn input-box-fn [e]
   (let [x (.-valueAsNumber (.-target e))]
@@ -36,18 +51,19 @@
                e (rest handler-data))))
     (js/console.log event-data handler-data)))
 
-(defn render-inc-test [m]
+(defn render-inc-test [{:keys [toast] :as m}]
   [:div#counter
    [:input#inputbox {:type "number"
-                     :value (inc (:incrementor m))
-                     :on {:input [:input-box-fn]}}] ; (swap! a fn [m] (assoc m :incrementor x)) == (apply f '(current value of a) '(no args here)) -> this means that f is being called with current value of a (which is the map.)
+                     :value (:incrementor m)
+                     :on {:input [:input-box-fn]}}]
 
    [:div#displaythething (:incremented m)]
-   [:button {:on {:click [:button-click-fn 1]}}
-
+   [:button {:on {:click [:button-click-fn]}}
     "Click Me"]
    [:button {:on {:click [:download-button]}}
-    "Download"]])
+    "Download"]
+   [:div#toast
+    (when toast [:div#msg toast])]])
 
 (defn main []
   (let [el (js/document.getElementById "app")]
@@ -65,6 +81,7 @@
     (clojure.core/require 'shadow.cljs.devtools.api)
     (shadow.cljs.devtools.api/repl :test))
   (swap! a assoc :incrementor 2)
-  
+  (swap! a dissoc :toast)
+  @a
   
   ,)

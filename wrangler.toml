@@ -1,0 +1,7 @@
+name = "rifuta"
+account_id = "28f2a4a4f2b1bbdeb10c308475c3b2b1"
+compatibility_date = "2024-01-01"
+
+[build]
+upload.format = "directory"
+upload.dir = "resources/release"

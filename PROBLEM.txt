@@ -1,0 +1,13 @@
+IOS IS SHITE
+
+state is not being read/write to localstorage.
+state is not pre-filled on refresh, on iOS.
+ -- write to opfs first, if fail, catch and write to localStorage.
+ -- read from opfs first, if not possible read from localStorage, if local Key is nil, reset! to defautl maps.
+
+
+Hypothesis 0 - opfs.createWritbale doesn't return an exception as GPT said it would.
+Hypothsesis 1 - opfs.getFile doesn't return an exception on iOS. which leads to the read function not falling back to local storage.
+
+
+-- log errors in DOM.

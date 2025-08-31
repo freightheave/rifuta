@@ -1,9 +1,14 @@
-- Functionality
+-- Functionality --
+
 -D Make Shadow server listen on 0.0.0.0 [Moot, use github pages for SSL]
 -D Save/Export/Import the data.
--- Save atom to localStorage.
-	-- restore from local storage on load.
+-D Save atom to localStorage.
+	-D restore from local storage on load.
 -D Package the app and run on phone (shadow "release mode")
+-- Add a timestamp for the sets.
+-- Beautify Last set
+-- rename "current-set" to "last-working-set"
+-- Feedback for when reading/writing or even recording.
 -- Run app as PWA.
 -- Upload sets.
 -- Time since last set. (Look into webcomponents, or other ways.)
@@ -13,11 +18,13 @@
 -- Ability to configure program.
 	-- Double progression on weights/reps for exercise.
 	-- Naming gym sessions. (look into naming the template for the program, "workout")
+	-- Add support for different types of sets.
 -- Exercise shoudl be DD/type
 -- Weight should have switchable units
 -- RIR and/or RPE
 
 
-- Visual stuff
+-- Visual stuff --
+
 -- Heading/App Name
 -- PPrint the forms

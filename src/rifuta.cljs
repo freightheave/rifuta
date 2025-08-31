@@ -4,10 +4,11 @@
    [replicant.dom :as r]
    [rifuta.opfs :as opfs]))
 
-(defonce store (atom nil))
+(defonce store (atom nil)) ;; {:current-set {}, :all-sets [{}], :errors ()}
 
 (defn conj-err [s]
   (swap! store update :errors conj s)
+  (swap! store update :logs conj {:msg s})
   ,)
 
 (defn exercise-input [e]
@@ -89,7 +90,7 @@
                                              :on {:input [:reps-input]}}]]
    [:div.submit [:button {:on
                           {:click [:store-set]}}
-                 "Submit2"]]])
+                 "Submit"]]])
 
 (defn render-done-sets [state]
   [:div [:p (str (peek (get state :all-sets)))]])
@@ -103,7 +104,10 @@
       [:li [:pre x]])]
    [:div [:button {:on
                    {:click [:export-all-sets]}}
-          "Export All Sets"]]])
+          "Export All Sets"]]
+   [:div.toast-container
+    (for [log (:logs state)]
+      [:div.toast [:pre (:msg log)]])]])
 
 (defn main []
   (-> (js/navigator.serviceWorker.register "/sw.js" (clj->js {:scope "/"}))
@@ -160,8 +164,7 @@
     (if (nil? x)
       (reset! store {:current-set {}, :all-sets []})))
   (throw (js/Error. "Oops"))
-  
-  ,)
+  (cljs.reader/read-string (pr-str (pop (conj #queue [1,2,3] [1])))))
 
 ; ---Connect to browser REPL
 (comment
